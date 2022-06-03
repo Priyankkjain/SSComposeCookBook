@@ -1,8 +1,8 @@
 package com.jetpack.compose.learning.tabarlayout
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -227,22 +227,22 @@ class TabBarLayoutActivity : AppCompatActivity() {
             }
         }
     }
+}
 
-    private fun Modifier.indicatorSetUp(currentTabPosition: TabPosition): Modifier = composed(
-        inspectorInfo = debugInspectorInfo {
-            name = "tabIndicator"
-            value = currentTabPosition
-        }
-    ) {
-        val indicatorWidth = 32.dp
-        val currentTabWidth = currentTabPosition.width
-        val indicatorOffset by animateDpAsState(
-            targetValue = currentTabPosition.left + currentTabWidth / 2 - indicatorWidth / 2,
-            animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing)
-        )
-        fillMaxWidth()
-            .wrapContentSize(Alignment.BottomStart)
-            .offset(x = indicatorOffset)
-            .width(indicatorWidth)
+fun Modifier.indicatorSetUp(currentTabPosition: TabPosition): Modifier = composed(
+    inspectorInfo = debugInspectorInfo {
+        name = "tabIndicator"
+        value = currentTabPosition
     }
+) {
+    val indicatorWidth = 32.dp
+    val currentTabWidth = currentTabPosition.width
+    val indicatorOffset by animateDpAsState(
+        targetValue = currentTabPosition.left + currentTabWidth / 2 - indicatorWidth / 2,
+        animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing)
+    )
+    fillMaxWidth()
+        .wrapContentSize(Alignment.BottomStart)
+        .offset(x = indicatorOffset)
+        .width(indicatorWidth)
 }

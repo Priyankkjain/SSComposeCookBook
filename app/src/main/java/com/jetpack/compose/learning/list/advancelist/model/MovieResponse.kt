@@ -14,5 +14,6 @@ data class Movie(
     var original_title: String,
     var backdrop_path: String,
     var vote_average: String,
-    var vote_count: String
+    var vote_count: String,
+    val release_date: String
 )
