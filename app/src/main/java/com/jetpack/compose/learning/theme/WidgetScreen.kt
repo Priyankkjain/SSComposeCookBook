@@ -184,35 +184,31 @@ fun CheckBoxWidgets() {
 @Composable
 fun FloatingActionButton() {
     WidgetTitle("Floating Action Buttons")
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
+    Row(
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        FloatingActionButton(
+            onClick = { },
+            backgroundColor = MaterialTheme.colors.primary,
         ) {
-            //FAB custom color
-            FloatingActionButton(
-                onClick = { },
-                backgroundColor = MaterialTheme.colors.primary,
-            ) {
-                Icon(Icons.Filled.Add, "")
-            }
-
-            //Simple FAB with custom content (similar of Exntended FAB)
-            FloatingActionButton(onClick = { },
-                backgroundColor = MaterialTheme.colors.primary,
-                content = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(start = 10.dp, end = 10.dp)
-                    ) {
-                        Icon(Icons.Filled.Add, "")
-                        Spacer(modifier = Modifier.width(5.dp))
-                        Text(text = "Simple FAB")
-                    }
-                })
-
+            Icon(Icons.Filled.Add, "")
         }
+
+        FloatingActionButton(onClick = { },
+            backgroundColor = MaterialTheme.colors.primary,
+            content = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(start = 10.dp, end = 10.dp)
+                ) {
+                    Icon(Icons.Filled.Add, "")
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Text(text = "Simple FAB")
+                }
+            })
+
     }
     VerticalSpacer()
 }
@@ -267,91 +263,69 @@ fun SliderWidgets() {
     var sliderPosition by remember { mutableStateOf(0f..100f) }
 
     WidgetTitle("Slider")
-    Column {
-        Text(text = "Slider value =  $basicSliderPosition", fontSize = 16.sp)
-        Slider(value = basicSliderPosition, onValueChange = { basicSliderPosition = it })
-        VerticalSpacer()
-        Text(
-            text = "From range  ${sliderPosition.start}  to  ${sliderPosition.endInclusive}",
-            fontSize = 16.sp
-        )
-        RangeSlider(
-            steps = 5,
-            values = sliderPosition,
-            onValueChange = { it -> sliderPosition = it },
-            valueRange = 0f..100f,
-            onValueChangeFinished = {
-                // some business logic update with the state you hold
-            },
-        )
-    }
+    Text(text = "Slider value =  $basicSliderPosition", fontSize = 16.sp)
+    Slider(value = basicSliderPosition, onValueChange = { basicSliderPosition = it })
+    VerticalSpacer()
+    Text(
+        text = "From range  ${sliderPosition.start}  to  ${sliderPosition.endInclusive}",
+        fontSize = 16.sp
+    )
+    RangeSlider(
+        steps = 5,
+        values = sliderPosition,
+        onValueChange = { sliderPosition = it },
+        valueRange = 0f..100f
+    )
     VerticalSpacer()
 }
 
 @Composable
 fun SnackBarWidgets() {
     WidgetTitle("SnackBar")
-    Column {
-        Snackbar {
-            Text(text = "Basic snackbar")
-        }
-        VerticalSpacer()
-        Snackbar(
-            action = {
-                TextButton(onClick = {}) {
-                    Text(text = "Click Me")
-                }
-            },
-        ) {
-            Text(text = "Snackbar with action button")
-        }
-        VerticalSpacer()
-        Snackbar(
-            backgroundColor = MaterialTheme.colors.primary,
-            action = {
-                TextButton(onClick = {}) {
-                    Text(text = "ClickMe")
-                }
-            }) {
-            Text(text = "Custom color background", color = MaterialTheme.colors.onPrimary)
-        }
+    Snackbar {
+        Text(text = "Basic snackbar")
+    }
+    VerticalSpacer()
+    Snackbar(
+        action = {
+            TextButton(onClick = {}) {
+                Text(text = "Click Me")
+            }
+        },
+    ) {
+        Text(text = "Snackbar with action button")
+    }
+    VerticalSpacer()
+    Snackbar(
+        backgroundColor = MaterialTheme.colors.primary,
+        action = {
+            TextButton(onClick = {}) {
+                Text(text = "ClickMe")
+            }
+        }) {
+        Text(text = "Custom color background", color = MaterialTheme.colors.onPrimary)
     }
     VerticalSpacer()
 }
 
 @Composable
 fun SwitchWidgets() {
-    var simpleSwitchState by remember { mutableStateOf(false) }
     var customEnableColorSwitchState by remember { mutableStateOf(true) }
     WidgetTitle("Switch")
-    Column {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = "Simple Switch.", modifier = Modifier.padding(end = 5.dp))
-            Switch(
-                checked = simpleSwitchState,
-                onCheckedChange = { simpleSwitchState = it }
-            )
-        }
-        // Switch with selected thumb color
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = "Custom selected thumb color.", modifier = Modifier.padding(end = 5.dp))
-            Switch(
-                checked = customEnableColorSwitchState,
-                onCheckedChange = { customEnableColorSwitchState = it },
-                colors = SwitchDefaults.colors(
-                    checkedThumbColor = MaterialTheme.colors.primary,
-                    checkedTrackColor = MaterialTheme.colors.primaryVariant,
-                ),
-            )
-        }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(text = "Custom selected thumb color.", modifier = Modifier.padding(end = 5.dp))
+        Switch(
+            checked = customEnableColorSwitchState,
+            onCheckedChange = { customEnableColorSwitchState = it },
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = MaterialTheme.colors.primary,
+                checkedTrackColor = MaterialTheme.colors.primaryVariant,
+            ),
+        )
     }
     VerticalSpacer()
 }
