@@ -1,7 +1,6 @@
 package com.jetpack.compose.learning.theme
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
@@ -21,6 +20,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -119,32 +120,24 @@ class ThemeActivity : ComponentActivity() {
         val items = listOf(ThemeNavigationScreenType.Widgets, ThemeNavigationScreenType.Demo)
         BottomNavigation {
             val navBackStackEntry by navHostController.currentBackStackEntryAsState()
-            val currentRoute = navBackStackEntry?.destination?.route
-            val parentName = navBackStackEntry?.destination?.parent?.route
-            Log.d("Widget Theme", "BottomNavBar: Current Route -> $currentRoute")
-            Log.d(
-                "Widget Theme",
-                "BottomNavBar: Parent Navgraph available -> ${navBackStackEntry?.destination?.parent == null}"
-            )
-            Log.d("Widget Theme", "BottomNavBar: Parent Route of  Current Route -> $parentName")
             items.forEach { screen ->
+                val isCurrentSelected =
+                    navBackStackEntry?.destination?.hierarchy?.any { it.route == screen.route } == true
                 BottomNavigationItem(
                     onClick = {
-                        if (currentRoute?.contains(screen.route) == false) {
-                            navHostController.popBackStack(
-                                navHostController.graph.startDestinationId,
-                                false
-                            )
+                        if (!isCurrentSelected) {
                             navHostController.navigate(screen.route) {
+                                popUpTo(navHostController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
                                 launchSingleTop = true
+                                restoreState = true
                             }
                         }
                     },
                     icon = { Icon(screen.icon, "") },
                     label = { Text(text = screen.title) },
-                    selected = screen.route == currentRoute,
-                    selectedContentColor = MaterialTheme.colors.onPrimary,
-                    unselectedContentColor = Color.LightGray
+                    selected = isCurrentSelected
                 )
             }
         }
