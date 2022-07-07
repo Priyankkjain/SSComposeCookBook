@@ -1,16 +1,10 @@
 package com.jetpack.compose.learning.bottomnav
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
@@ -45,6 +39,7 @@ class BottomNavigationActivity : ComponentActivity() {
         }
     }
 
+    @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     @Composable
     fun MainContent() {
         val navController = rememberNavController()
@@ -73,53 +68,51 @@ class BottomNavigationActivity : ComponentActivity() {
             ScreenType.Notifications,
             ScreenType.Profile
         )
-        Column() {
-            BottomNavigation() {
-                val navBackStackEntry by navHostController.currentBackStackEntryAsState()
-                val currentRoute = navBackStackEntry?.destination?.route
-                items.forEach { screen ->
-                    BottomNavigationItem(
-                        onClick = {
-                            // to make sure that we do not on the same screen again and again
-                            if (currentRoute?.contains(screen.route) == false) {
+        BottomNavigation() {
+            val navBackStackEntry by navHostController.currentBackStackEntryAsState()
+            val currentRoute = navBackStackEntry?.destination?.route
+            items.forEach { screen ->
+                BottomNavigationItem(
+                    onClick = {
+                        // to make sure that we do not on the same screen again and again
+                        if (currentRoute?.contains(screen.route) == false) {
 
-                                // removed backstack when navigated
-                                navHostController.popBackStack(
-                                    navHostController.graph.startDestinationId,
-                                    false
-                                )
+                            // removed backstack when navigated
+                            navHostController.popBackStack(
+                                navHostController.graph.startDestinationId,
+                                false
+                            )
 
-                                when (screen.route) {
-                                    // Redirecting to Notifications
-                                    ScreenType.Notifications.route -> {
-                                        navHostController.navigate("${screen.route}/?$NOTIFICATION_ARGUMENT_KEY=145") {
-                                            launchSingleTop = true
-                                        }
+                            when (screen.route) {
+                                // Redirecting to Notifications
+                                ScreenType.Notifications.route -> {
+                                    navHostController.navigate("${screen.route}/?$NOTIFICATION_ARGUMENT_KEY=145") {
+                                        launchSingleTop = true
                                     }
-                                    // Redirecting to Profile Screen
-                                    ScreenType.Profile.route -> {
-                                        val user = Gson().toJson(UserModel("Hanif", 1))
-                                        navHostController.navigate(route = "${screen.route}/$user") {
-                                            launchSingleTop = true
-                                        }
+                                }
+                                // Redirecting to Profile Screen
+                                ScreenType.Profile.route -> {
+                                    val user = Gson().toJson(UserModel("Hanif", 1))
+                                    navHostController.navigate(route = "${screen.route}/$user") {
+                                        launchSingleTop = true
                                     }
-                                    else -> {
-                                        navHostController.navigate(screen.route) {
-                                            launchSingleTop = true
-                                        }
+                                }
+                                else -> {
+                                    navHostController.navigate(screen.route) {
+                                        launchSingleTop = true
                                     }
                                 }
                             }
-                        },
-                        icon = { Icon(screen.icon, "") },
-                        label = { Text(text = screen.resourceId) },
-                        selected = when (screen.route) {
-                            ScreenType.Profile.route -> currentRoute == screen.route.plus("/{$PROFILE_ARGUMENT_KEY}")
-                            ScreenType.Notifications.route -> currentRoute == screen.route.plus("/?$NOTIFICATION_ARGUMENT_KEY={$NOTIFICATION_ARGUMENT_KEY}")
-                            else -> currentRoute == screen.route
                         }
-                    )
-                }
+                    },
+                    icon = { Icon(screen.icon, "") },
+                    label = { Text(text = screen.resourceId) },
+                    selected = when (screen.route) {
+                        ScreenType.Profile.route -> currentRoute == screen.route.plus("/{$PROFILE_ARGUMENT_KEY}")
+                        ScreenType.Notifications.route -> currentRoute == screen.route.plus("/?$NOTIFICATION_ARGUMENT_KEY={$NOTIFICATION_ARGUMENT_KEY}")
+                        else -> currentRoute == screen.route
+                    }
+                )
             }
         }
     }

@@ -4,7 +4,7 @@ import com.jetpack.compose.learning.R
 
 object DataProvider {
 
-    var itemList = listOf(
+    val itemList = listOf(
         Items(
             id = 1,
             title = "icecampus",

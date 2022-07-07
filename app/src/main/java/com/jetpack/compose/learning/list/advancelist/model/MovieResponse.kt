@@ -1,18 +1,18 @@
 package com.jetpack.compose.learning.list.advancelist.model
 
 data class MovieResponse(
-    var page: Int,
-    var results: List<Movie>
+    val page: Int,
+    val results: List<Movie>
 )
 
 data class Movie(
-    var id: Int,
-    var poster_path: String,
-    var original_language: String,
-    var overview: String,
-    var title: String,
-    var original_title: String,
-    var backdrop_path: String,
-    var vote_average: String,
-    var vote_count: String
+    val id: Int,
+    val poster_path: String,
+    val original_language: String,
+    val overview: String,
+    val title: String,
+    val original_title: String,
+    val backdrop_path: String,
+    val vote_average: String,
+    val vote_count: String
 )

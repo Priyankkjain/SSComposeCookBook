@@ -13,12 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -60,9 +55,9 @@ import com.jetpack.compose.learning.theme.AppThemeState
 import com.jetpack.compose.learning.theme.BaseView
 import com.jetpack.compose.learning.theme.SystemUiController
 import com.jetpack.compose.learning.theme.ThemeActivity
-import com.jetpack.compose.learning.zoomview.ZoomViewActivity
 import com.jetpack.compose.learning.timepicker.TimePickerActivity
 import com.jetpack.compose.learning.xmls.ComposeInXmlViews
+import com.jetpack.compose.learning.zoomview.ZoomViewActivity
 
 @ExperimentalComposeUiApi
 @ExperimentalFoundationApi
@@ -89,31 +84,37 @@ class MainActivity : ComponentActivity() {
                 title = { Text(text = "ComposeCookBook", color = Color.White) },
             )
             LazyColumn {
-                items(getComponents()) {
-                    ButtonComponent(it.componentName, it.className)
+                items(getComponents(), key = {
+                    it.className.name
+                }) {
+                    ButtonComponent(it)
                 }
             }
         }
     }
 
     @Composable
-    fun ButtonComponent(buttonText: String, className: Class<*>) {
-        var context = LocalContext.current
+    fun ButtonComponent(component: Component) {
+        val context = LocalContext.current
         OutlinedButton(
             onClick = {
-                context.startActivity(Intent(applicationContext, className))
+                context.startActivity(Intent(applicationContext, component.className))
             },
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(),
             shape = RoundedCornerShape(8.dp),
-            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary.copy(0.04f)),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = MaterialTheme.colors.primary.copy(
+                    0.04f
+                )
+            ),
             border = BorderStroke(2.dp, MaterialTheme.colors.primary.copy(0.5f)),
         ) {
             Text(
                 modifier = Modifier
                     .padding(8.dp),
-                text = buttonText,
+                text = component.componentName,
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colors.primary
@@ -121,7 +122,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun getComponents(): List<Component> = listOf<Component>(
+    private fun getComponents(): List<Component> = listOf(
         Component("Android Views (Xml in Compose View)", AndroidViews::class.java),
         Component("Animation", AnimationActivity::class.java),
         Component("App Bar", TopAppBarActivity::class.java),

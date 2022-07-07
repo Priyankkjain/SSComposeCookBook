@@ -2,6 +2,8 @@ package com.jetpack.compose.learning.navigationdrawer
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -22,17 +24,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jetpack.compose.learning.theme.AppThemeState
-import com.jetpack.compose.learning.theme.SystemUiController
 import com.jetpack.compose.learning.theme.BaseView
-import kotlinx.coroutines.CoroutineScope
+import com.jetpack.compose.learning.theme.SystemUiController
 import kotlinx.coroutines.launch
 
 class BottomDrawerActivity : ComponentActivity() {
-
-    @OptIn(ExperimentalMaterialApi::class)
-    lateinit var drawerState: BottomDrawerState
-    lateinit var scope: CoroutineScope
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -48,14 +44,22 @@ class BottomDrawerActivity : ComponentActivity() {
     @Preview
     @Composable
     fun BottomDrawerSample() {
-        drawerState = rememberBottomDrawerState(BottomDrawerValue.Closed)
-        scope = rememberCoroutineScope()
+        val drawerState = rememberBottomDrawerState(BottomDrawerValue.Closed)
+        val scope = rememberCoroutineScope()
+        val onBackPressedDispatcherOwner = LocalOnBackPressedDispatcherOwner.current
+
+        BackHandler(enabled = drawerState.isOpen) {
+            if (drawerState.isOpen) {
+                scope.launch { drawerState.close() }
+            }
+        }
+
         val (isGestureEnable, toggleGesturesEnabled) = remember { mutableStateOf(true) }
         Column(Modifier.background(MaterialTheme.colors.background)) {
             TopAppBar(
                 title = { Text("Bottom Drawer Sample") },
                 navigationIcon = {
-                    IconButton(onClick = { finish() }) {
+                    IconButton(onClick = { onBackPressedDispatcherOwner?.onBackPressedDispatcher?.onBackPressed() }) {
                         Icon(Icons.Filled.ArrowBack, contentDescription = null)
                     }
                 }
@@ -123,15 +127,6 @@ class BottomDrawerActivity : ComponentActivity() {
                         }
                     }
                 })
-        }
-    }
-
-    @OptIn(ExperimentalMaterialApi::class)
-    override fun onBackPressed() {
-        if (drawerState.isOpen) {
-            scope.launch { drawerState.close() }
-        } else {
-            super.onBackPressed()
         }
     }
 }

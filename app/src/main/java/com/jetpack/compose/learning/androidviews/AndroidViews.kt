@@ -8,20 +8,8 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
@@ -39,10 +27,6 @@ import com.jetpack.compose.learning.theme.BaseView
 import com.jetpack.compose.learning.theme.SystemUiController
 
 class AndroidViews : ComponentActivity() {
-
-    private lateinit var textView: AppCompatTextView
-    private lateinit var button: AppCompatButton
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -78,21 +62,26 @@ class AndroidViews : ComponentActivity() {
             verticalArrangement = Arrangement.Top
         ) {
             Spacer(modifier = Modifier.fillMaxHeight(0.05f))
-            Text(text = "Below View is inflated from Xml in AndroidView Component",
-            modifier = Modifier.padding(15.dp))
-            
-            AndroidView(factory = {
-                View.inflate(it, R.layout.compose, null)
-            },
-            update = {
-                textView = it.findViewById(R.id.txtAppCompatTextView)
-                button = it.findViewById(R.id.btnAppCompatButton)
+            Text(
+                text = "Below View is inflated from Xml in AndroidView Component",
+                modifier = Modifier.padding(15.dp)
+            )
 
-                button.setOnClickListener {
-                    Toast.makeText(it.context, "AppCompat Button Clicked", Toast.LENGTH_SHORT).show()
-                }
-            },
-            modifier = Modifier.fillMaxWidth(0.85f))
+            AndroidView(
+                factory = {
+                    View.inflate(it, R.layout.compose, null)
+                },
+                update = {
+                    val textView: AppCompatTextView = it.findViewById(R.id.txtAppCompatTextView)
+                    val button: AppCompatButton = it.findViewById(R.id.btnAppCompatButton)
+
+                    button.setOnClickListener { view ->
+                        Toast.makeText(view.context, "AppCompat Button Clicked", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(0.85f)
+            )
         }
     }
 }

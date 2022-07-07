@@ -15,11 +15,9 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,11 +29,6 @@ import com.jetpack.compose.learning.theme.BaseView
 import com.jetpack.compose.learning.theme.SystemUiController
 
 class DialogActivity : ComponentActivity() {
-
-    // it is use to set our state of dialog box to open as true.
-    lateinit var openAlertDialog: MutableState<Boolean>
-    lateinit var openCustomAlertDialog: MutableState<Boolean>
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -50,14 +43,18 @@ class DialogActivity : ComponentActivity() {
     @Preview
     @Composable
     fun DialogTypes() {
-        openAlertDialog = remember { mutableStateOf(false) }
-        openCustomAlertDialog = remember { mutableStateOf(false) }
+        val openAlertDialog = remember { mutableStateOf(false) }
+        val openCustomAlertDialog = remember { mutableStateOf(false) }
 
         val (isDismissOnBackPress, setDismissOnBackPress) = remember { mutableStateOf(true) }
         val (isDismissOnClickOutside, setDismissOnClickOutside) = remember { mutableStateOf(true) }
 
         val spaceHeight = 24.dp
-        Column(Modifier.background(MaterialTheme.colors.background).fillMaxHeight()) {
+        Column(
+            Modifier
+                .background(MaterialTheme.colors.background)
+                .fillMaxHeight()
+        ) {
             TopAppBar(
                 title = { Text("Dialog") },
                 navigationIcon = {
@@ -98,11 +95,15 @@ class DialogActivity : ComponentActivity() {
         }
 
         if (openAlertDialog.value) {
-            AlertDialogSample(isDismissOnBackPress, isDismissOnClickOutside)
+            AlertDialogSample(isDismissOnBackPress, isDismissOnClickOutside) {
+                openAlertDialog.value = false
+            }
         }
 
         if (openCustomAlertDialog.value) {
-            CustomAlertDialogSample(isDismissOnBackPress, isDismissOnClickOutside)
+            CustomAlertDialogSample(isDismissOnBackPress, isDismissOnClickOutside) {
+                openCustomAlertDialog.value = false
+            }
         }
     }
 
@@ -163,16 +164,17 @@ class DialogActivity : ComponentActivity() {
     }
 
     @Composable
-    @OptIn(ExperimentalComposeUiApi::class)
-    fun AlertDialogSample(closeOnBackPress: Boolean, closeOnOutsideClick: Boolean) {
+    fun AlertDialogSample(
+        closeOnBackPress: Boolean,
+        closeOnOutsideClick: Boolean,
+        onDismiss: () -> Unit
+    ) {
         AlertDialog(
             properties = DialogProperties(
                 dismissOnBackPress = closeOnBackPress,
                 dismissOnClickOutside = closeOnOutsideClick
             ),
-            onDismissRequest = {
-                openAlertDialog.value = false
-            },
+            onDismissRequest = onDismiss,
             title = {
                 Text("Alert Dialog Title")
             },
@@ -181,16 +183,16 @@ class DialogActivity : ComponentActivity() {
             },
             confirmButton = {
                 TextButton(onClick = {
-                    openAlertDialog.value = false
                     Toast.makeText(this, "Clicked on Confirm", Toast.LENGTH_SHORT).show()
+                    onDismiss()
                 }) {
                     Text("Confirm")
                 }
             },
             dismissButton = {
                 TextButton(onClick = {
-                    openAlertDialog.value = false
                     Toast.makeText(this, "Clicked on Dismiss", Toast.LENGTH_SHORT).show()
+                    onDismiss()
                 }) {
                     Text("Dismiss")
                 }
@@ -199,15 +201,17 @@ class DialogActivity : ComponentActivity() {
     }
 
     @Composable
-    fun CustomAlertDialogSample(closeOnBackPress: Boolean, closeOnOutsideClick: Boolean) {
+    fun CustomAlertDialogSample(
+        closeOnBackPress: Boolean,
+        closeOnOutsideClick: Boolean,
+        onDismiss: () -> Unit
+    ) {
         AlertDialog(
             properties = DialogProperties(
                 dismissOnBackPress = closeOnBackPress,
                 dismissOnClickOutside = closeOnOutsideClick
             ),
-            onDismissRequest = {
-                openCustomAlertDialog.value = false
-            },
+            onDismissRequest = onDismiss,
             title = {
                 Text("Custom Alert Dialog Title")
             },
@@ -215,23 +219,20 @@ class DialogActivity : ComponentActivity() {
                 Text("Here is a description of the custom alert dialog")
             },
             buttons = {
-                Row(
-                    modifier = Modifier.padding(10.dp),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Button(
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = {
-                            openCustomAlertDialog.value = false
-                            Toast.makeText(
-                                this@DialogActivity,
-                                "Clicked on Dismiss",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    ) {
-                        Text("Dismiss")
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    onClick = {
+                        Toast.makeText(
+                            this@DialogActivity,
+                            "Clicked on Dismiss",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        onDismiss()
                     }
+                ) {
+                    Text("Dismiss")
                 }
             }
         )

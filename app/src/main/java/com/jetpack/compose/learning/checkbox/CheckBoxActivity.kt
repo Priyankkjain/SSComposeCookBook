@@ -4,23 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.material.Checkbox
-import androidx.compose.material.CheckboxDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -50,7 +40,7 @@ class CheckBoxActivity : ComponentActivity() {
     fun CheckBoxSample() {
 
         /* Here Create State of checkbox */
-        val mItemsList = remember {
+        val mItemsList by remember {
             mutableStateOf(
                 listOf(
                     Profession("Android"),
@@ -64,7 +54,11 @@ class CheckBoxActivity : ComponentActivity() {
 
         val (isClick, toggleClick) = remember { mutableStateOf(true) }
 
-        Column(Modifier.background(MaterialTheme.colors.background).fillMaxHeight()) {
+        Column(
+            Modifier
+                .background(MaterialTheme.colors.background)
+                .fillMaxHeight()
+        ) {
             TopAppBar(title = { Text("Checkbox") }, navigationIcon = {
                 IconButton(onClick = { onBackPressed() }) {
                     Icon(Icons.Filled.ArrowBack, contentDescription = null)
@@ -73,14 +67,14 @@ class CheckBoxActivity : ComponentActivity() {
             Column(Modifier.padding(20.dp)) {
                 Text("Select your interested area :", style = MaterialTheme.typography.h6)
                 Spacer(Modifier.requiredHeight(24.dp))
-                mItemsList.value.forEachIndexed { index, items ->
+                mItemsList.forEachIndexed { index, items ->
                     Row(
                         modifier = Modifier.padding(bottom = 10.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Checkbox(
-                            checked = mItemsList.value[index].value.value,
-                            onCheckedChange = { mItemsList.value[index].value.value = it },
+                            checked = mItemsList[index].value.value,
+                            onCheckedChange = { mItemsList[index].value.value = it },
                             enabled = true,
                             colors = CheckboxDefaults.colors(
                                 checkedColor = MaterialTheme.colors.primaryVariant,
